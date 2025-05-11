@@ -113,9 +113,13 @@ export const setupGameUpdates = (gameId, callbacks) => {
   const eventSource = new EventSource(`/api/game-updates?gameId=${gameId}`);
 
   eventSource.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    if (callbacks.onGameUpdate) {
-      callbacks.onGameUpdate(data);
+    try {
+      const data = JSON.parse(event.data);
+      if (callbacks.onGameUpdate) {
+        callbacks.onGameUpdate(data);
+      }
+    } catch (error) {
+      console.error('Error parsing SSE data:', error);
     }
   };
 

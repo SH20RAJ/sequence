@@ -53,11 +53,14 @@ export default function GamePage() {
     // Set up real-time game updates
     const gameUpdates = setupGameUpdates(gameId, {
       onGameUpdate: (data) => {
-        if (data.type === 'game_state') {
-          setGameState(data.gameState);
-        } else if (data.type === 'player_joined') {
-          setGameState(data.gameState);
-        } else if (data.type === 'player_left') {
+        console.log('Game update received:', data);
+
+        if (data.type === 'connected') {
+          console.log('Connected to game updates');
+        } else if (data.type === 'game_created' ||
+                  data.type === 'game_updated' ||
+                  data.type === 'player_joined' ||
+                  data.type === 'player_left') {
           setGameState(data.gameState);
         } else if (data.type === 'error') {
           setError(data.message);
@@ -118,6 +121,7 @@ export default function GamePage() {
   const handlePlaceChip = async (row, col) => {
     if (selectedCard) {
       try {
+        console.log('Placing chip:', { gameId, playerId, card: selectedCard, position: { row, col } });
         const result = await playCard(gameId, playerId, selectedCard, { row, col });
 
         if (result.error) {
@@ -125,11 +129,16 @@ export default function GamePage() {
           return;
         }
 
+        // Update the game state with the result
+        setGameState(result.gameState);
         setSelectedCard(null);
       } catch (error) {
         console.error('Error playing card:', error);
         setError('Failed to play card. Please try again.');
       }
+    } else {
+      setError('Please select a card first');
+      setTimeout(() => setError(''), 3000);
     }
   };
 
@@ -226,6 +235,7 @@ export default function GamePage() {
         cards={currentPlayerHand}
         onPlayCard={handlePlayCard}
         isCurrentPlayer={isCurrentPlayerTurn}
+        selectedCard={selectedCard}
       />
 
       {selectedCard && (

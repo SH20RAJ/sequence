@@ -9,17 +9,25 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.2",
+    "@heroicons/react": "^2.2.0",
+    "autoprefixer": "^10.4.21",
+    "canvas": "^3.1.0",
+    "framer-motion": "^12.10.5",
     "next": "15.3.2",
+    "postcss": "^8.5.3",
     "react": "^19.0.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^19.0.0",
+    "sharp": "^0.34.1",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.1.6",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
-    "tailwindcss": "^4"
+    "tailwindcss": "^4.1.6"
   }
 }

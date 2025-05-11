@@ -1,4 +1,5 @@
 import { initializeGame, checkForSequences } from '../../../utils/gameUtils';
+import { sendGameUpdate } from '../game-updates/route';
 
 // Store active games in memory (in production, use a database)
 const activeGames = new Map();
@@ -19,6 +20,12 @@ async function handleCreateGame(data) {
 
   // Store the game
   activeGames.set(gameId, gameState);
+
+  // Notify clients about the new game
+  sendGameUpdate(gameId, {
+    type: 'game_created',
+    gameState
+  });
 
   return new Response(JSON.stringify({
     gameId,
@@ -45,16 +52,16 @@ async function handleJoinGame(data) {
 
   const gameState = activeGames.get(gameId);
 
-  // Check if game is full (max 3 players for simplicity)
-  if (gameState.players.length >= 3) {
-    return new Response(JSON.stringify({ error: 'Game is full' }), {
+  // Check if game is full (max 2 players for 1v1 only)
+  if (gameState.players.length >= 2) {
+    return new Response(JSON.stringify({ error: 'Game is full. Only 1v1 games are supported.' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' }
     });
   }
 
   // Add player to the game
-  const playerColor = ['red', 'blue', 'green'][gameState.players.length % 3];
+  const playerColor = ['red', 'blue'][gameState.players.length % 2];
   const newPlayer = {
     id: playerId,
     name: playerName,
@@ -66,7 +73,7 @@ async function handleJoinGame(data) {
   gameState.players.push(newPlayer);
 
   // Deal cards to the new player
-  const cardsPerPlayer = gameState.players.length <= 2 ? 7 : 6;
+  const cardsPerPlayer = 7; // Always 7 cards for 1v1 games
   for (let i = 0; i < cardsPerPlayer; i++) {
     if (gameState.deck.length > 0) {
       const card = gameState.deck.pop();
@@ -76,6 +83,14 @@ async function handleJoinGame(data) {
 
   // Update the game state
   activeGames.set(gameId, gameState);
+
+  // Notify clients about the player joining
+  sendGameUpdate(gameId, {
+    type: 'player_joined',
+    playerId,
+    playerName,
+    gameState
+  });
 
   return new Response(JSON.stringify({
     playerId,
@@ -193,7 +208,7 @@ async function handlePlayCard(data) {
     player.sequences += 1;
 
     // Check for win condition
-    const sequencesToWin = gameState.players.length <= 2 ? 1 : 2;
+    const sequencesToWin = 1; // Always 1 sequence to win in 1v1 games
     if (player.sequences >= sequencesToWin) {
       gameState.gameStatus = 'completed';
       gameState.winner = playerId;
@@ -214,6 +229,12 @@ async function handlePlayCard(data) {
 
   // Update the game state
   activeGames.set(gameId, gameState);
+
+  // Notify clients about the move
+  sendGameUpdate(gameId, {
+    type: 'game_updated',
+    gameState
+  });
 
   return new Response(JSON.stringify({
     success: true,
@@ -261,6 +282,14 @@ async function handleLeaveGame(data) {
 
     // Update the game state
     activeGames.set(gameId, gameState);
+
+    // Notify remaining players
+    sendGameUpdate(gameId, {
+      type: 'player_left',
+      playerId,
+      playerName: player.name,
+      gameState
+    });
   }
 
   return new Response(JSON.stringify({

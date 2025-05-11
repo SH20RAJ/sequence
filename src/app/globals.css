@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   --primary-bg: #1a1a2e;
   --secondary-bg: #16213e;
@@ -11,57 +13,69 @@
   --error-color: #e63946;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@layer base {
+  * {
+    @apply box-border m-0 p-0;
+  }
+
+  html,
+  body {
+    @apply h-full w-full overflow-x-hidden font-sans text-white;
+    background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+  }
+
+  a {
+    @apply text-blue-300 no-underline transition-colors duration-200;
+  }
+
+  a:hover {
+    @apply text-blue-400;
+  }
+
+  button {
+    @apply cursor-pointer;
+  }
+
+  input, button {
+    @apply font-sans;
+  }
 }
 
-html,
-body {
-  height: 100%;
-  width: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
-  color: var(--text-light);
-  overflow-x: hidden;
-}
+@layer components {
+  .card {
+    @apply relative rounded-xl bg-white shadow-lg transition-transform duration-300 ease-in-out;
+  }
 
-a {
-  color: var(--text-accent);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
+  .btn {
+    @apply rounded-lg px-4 py-2 font-medium transition-all duration-300 ease-in-out;
+  }
 
-a:hover {
-  color: var(--accent-color);
-}
+  .btn-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  }
 
-button {
-  cursor: pointer;
-}
+  .btn-secondary {
+    @apply bg-purple-600 text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2;
+  }
 
-input, button {
-  font-family: inherit;
+  .btn-accent {
+    @apply bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2;
+  }
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  @apply h-2 w-2;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
+  @apply rounded-full bg-opacity-20 bg-black;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--primary-blue);
-  border-radius: 4px;
+  @apply rounded-full bg-blue-600;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--dark-blue);
+  @apply bg-blue-700;
 }

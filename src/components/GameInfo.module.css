@@ -1,54 +1,76 @@
 .gameInfo {
-  background-color: rgba(26, 26, 46, 0.8);
-  border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 20px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  background-color: rgba(26, 26, 46, 0.9);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
   color: #fff;
+  border: 1px solid rgba(168, 218, 220, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.gameInfo::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/cards-pattern.png');
+  background-size: cover;
+  opacity: 0.05;
+  z-index: -1;
 }
 
 .statusContainer {
   text-align: center;
-  margin-bottom: 15px;
-  padding-bottom: 15px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .gameStatus {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   margin: 0;
   color: #a8dadc;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  letter-spacing: 1px;
 }
 
 .playersContainer {
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .playersTitle {
-  font-size: 1.2rem;
-  margin-bottom: 10px;
+  font-size: 1.3rem;
+  margin-bottom: 15px;
   color: #f1faee;
+  font-weight: bold;
+  letter-spacing: 1px;
 }
 
 .playersList {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
 }
 
 .playerItem {
   display: flex;
   align-items: center;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 15px;
+  border-radius: 10px;
   background-color: rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid transparent;
 }
 
 .activePlayer {
-  background-color: rgba(255, 255, 255, 0.2);
-  transform: scale(1.02);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: scale(1.03) translateX(5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border-left: 3px solid #a8dadc;
 }
 
 .playerChip {

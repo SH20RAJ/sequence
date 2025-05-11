@@ -1,164 +1,141 @@
-'use client';
-
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { createGame, joinGame } from '../utils/socketUtils';
-import styles from './page.module.css';
+import Image from "next/image";
+import Link from "next/link";
+import styles from "./page.module.css";
 
 export default function Home() {
-  const router = useRouter();
-  const [playerName, setPlayerName] = useState('');
-  const [gameId, setGameId] = useState('');
-  const [isCreating, setIsCreating] = useState(false);
-  const [isJoining, setIsJoining] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleCreateGame = async (e) => {
-    e.preventDefault();
-    if (!playerName.trim()) {
-      setError('Please enter your name');
-      return;
-    }
-
-    setIsCreating(true);
-
-    try {
-      const result = await createGame(playerName);
-
-      if (result.error) {
-        setError(result.error);
-        setIsCreating(false);
-        return;
-      }
-
-      // Store player info in localStorage
-      localStorage.setItem('sequencePlayerId', result.playerId);
-      localStorage.setItem('sequencePlayerName', playerName);
-
-      // Navigate to the game page
-      router.push(`/game/${result.gameId}`);
-    } catch (error) {
-      console.error('Error creating game:', error);
-      setError('Failed to create game. Please try again.');
-      setIsCreating(false);
-    }
-  };
-
-  const handleJoinGame = async (e) => {
-    e.preventDefault();
-    if (!playerName.trim()) {
-      setError('Please enter your name');
-      return;
-    }
-
-    if (!gameId.trim()) {
-      setError('Please enter a game ID');
-      return;
-    }
-
-    setIsJoining(true);
-
-    try {
-      const result = await joinGame(gameId, playerName);
-
-      if (result.error) {
-        setError(result.error);
-        setIsJoining(false);
-        return;
-      }
-
-      // Store player info in localStorage
-      localStorage.setItem('sequencePlayerId', result.playerId);
-      localStorage.setItem('sequencePlayerName', playerName);
-
-      // Navigate to the game page
-      router.push(`/game/${gameId}`);
-    } catch (error) {
-      console.error('Error joining game:', error);
-      setError('Failed to join game. Please try again.');
-      setIsJoining(false);
-    }
-  };
-
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
-        <div className={styles.header}>
-          <h1 className={styles.title}>Sequence</h1>
-          <p className={styles.subtitle}>The Classic Board and Card Game</p>
+    <div className="min-h-screen bg-gradient-to-b from-dark-900 to-dark-950 text-white">
+      {/* Background pattern */}
+      <div className="absolute inset-0 bg-card-pattern opacity-5 z-0"></div>
+
+      {/* Header */}
+      <header className="relative z-10 pt-8 pb-6 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-5xl md:text-7xl font-bold text-center bg-gradient-to-r from-gold-300 via-gold-500 to-gold-300 bg-clip-text text-transparent drop-shadow-lg animate-shimmer">
+            Sequence
+          </h1>
+          <p className="mt-3 text-xl md:text-2xl text-center text-blue-300 font-light">
+            The Classic Board and Card Game
+          </p>
         </div>
+      </header>
 
-        {error && <div className={styles.error}>{error}</div>}
+      {/* Main content */}
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Create Game Section */}
+        <section className="mb-16">
+          <div className="bg-dark-800 bg-opacity-80 rounded-2xl p-8 shadow-premium border border-gold-500/20 relative overflow-hidden backdrop-blur-sm transition-all duration-300 hover:shadow-premium-hover">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-radial from-gold-500/20 to-transparent opacity-60"></div>
 
-        <div className={styles.cardBackground}>
-          <div className={styles.formContainer}>
-            <div className={styles.formSection}>
-              <h2 className={styles.formTitle}>Create a New Game</h2>
-              <form onSubmit={handleCreateGame} className={styles.form}>
+            <h2 className="text-3xl font-bold mb-6 text-gold-400">Create a New Game</h2>
+
+            <form className="space-y-4">
+              <div>
+                <label htmlFor="yourName" className="block text-sm font-medium text-blue-300 mb-1">Your Name</label>
                 <input
                   type="text"
-                  value={playerName}
-                  onChange={(e) => setPlayerName(e.target.value)}
-                  placeholder="Your Name"
-                  className={styles.input}
-                  disabled={isCreating || isJoining}
+                  id="yourName"
+                  className="w-full px-4 py-3 bg-dark-900 border border-blue-900 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all duration-200"
+                  placeholder="Enter your name"
                 />
-                <button
-                  type="submit"
-                  className={styles.button}
-                  disabled={isCreating || isJoining}
-                >
-                  {isCreating ? 'Creating...' : 'Create Game'}
-                </button>
-              </form>
-            </div>
+              </div>
 
-            <div className={styles.divider}></div>
+              <button
+                type="submit"
+                className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-gold-600 to-gold-500 hover:from-gold-500 hover:to-gold-400 text-dark-900 font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+              >
+                Create Game
+              </button>
+            </form>
+          </div>
+        </section>
 
-            <div className={styles.formSection}>
-              <h2 className={styles.formTitle}>Join Existing Game</h2>
-              <form onSubmit={handleJoinGame} className={styles.form}>
+        {/* Join Game Section */}
+        <section className="mb-16">
+          <div className="bg-dark-800 bg-opacity-80 rounded-2xl p-8 shadow-premium border border-blue-900/30 relative overflow-hidden backdrop-blur-sm transition-all duration-300 hover:shadow-premium-hover">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-radial from-blue-500/20 to-transparent opacity-60"></div>
+
+            <h2 className="text-3xl font-bold mb-6 text-blue-400">Join Existing Game</h2>
+
+            <form className="space-y-4 sm:flex sm:items-end sm:space-y-0 sm:space-x-4">
+              <div className="flex-1">
+                <label htmlFor="yourNameJoin" className="block text-sm font-medium text-blue-300 mb-1">Your Name</label>
                 <input
                   type="text"
-                  value={playerName}
-                  onChange={(e) => setPlayerName(e.target.value)}
-                  placeholder="Your Name"
-                  className={styles.input}
-                  disabled={isCreating || isJoining}
+                  id="yourNameJoin"
+                  className="w-full px-4 py-3 bg-dark-900 border border-blue-900 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  placeholder="Enter your name"
                 />
+              </div>
+
+              <div className="flex-1">
+                <label htmlFor="gameId" className="block text-sm font-medium text-blue-300 mb-1">Game ID</label>
                 <input
                   type="text"
-                  value={gameId}
-                  onChange={(e) => setGameId(e.target.value.toUpperCase())}
-                  placeholder="Game ID"
-                  className={styles.input}
-                  disabled={isCreating || isJoining}
+                  id="gameId"
+                  className="w-full px-4 py-3 bg-dark-900 border border-blue-900 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  placeholder="Enter game ID"
                 />
-                <button
-                  type="submit"
-                  className={styles.button}
-                  disabled={isCreating || isJoining}
-                >
-                  {isJoining ? 'Joining...' : 'Join Game'}
-                </button>
-              </form>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+              >
+                Join Game
+              </button>
+            </form>
+          </div>
+        </section>
+
+        {/* How to Play Section */}
+        <section>
+          <div className="bg-dark-800 bg-opacity-80 rounded-2xl p-8 shadow-premium border border-emerald-500/20 relative overflow-hidden backdrop-blur-sm">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-radial from-emerald-500/20 to-transparent opacity-60"></div>
+
+            <h2 className="text-3xl font-bold mb-8 text-emerald-400">How to Play</h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-dark-900 bg-opacity-60 p-6 rounded-xl border-l-4 border-emerald-500 shadow-lg hover:transform hover:-translate-y-1 transition-all duration-300">
+                <h3 className="text-xl font-bold mb-2 text-emerald-300">Playing Cards</h3>
+                <p className="text-gray-300">Play a card from your hand and place a chip on the corresponding card on the board</p>
+              </div>
+
+              <div className="bg-dark-900 bg-opacity-60 p-6 rounded-xl border-l-4 border-emerald-500 shadow-lg hover:transform hover:-translate-y-1 transition-all duration-300">
+                <h3 className="text-xl font-bold mb-2 text-emerald-300">Forming Sequences</h3>
+                <p className="text-gray-300">Form sequences of 5 chips in a row (horizontally, vertically, or diagonally)</p>
+              </div>
+
+              <div className="bg-dark-900 bg-opacity-60 p-6 rounded-xl border-l-4 border-emerald-500 shadow-lg hover:transform hover:-translate-y-1 transition-all duration-300">
+                <h3 className="text-xl font-bold mb-2 text-emerald-300">Special Cards</h3>
+                <p className="text-gray-300">Use Jacks strategically - Two-eyed Jacks are wild, One-eyed Jacks remove opponent chips</p>
+              </div>
+
+              <div className="bg-dark-900 bg-opacity-60 p-6 rounded-xl border-l-4 border-emerald-500 shadow-lg hover:transform hover:-translate-y-1 transition-all duration-300">
+                <h3 className="text-xl font-bold mb-2 text-emerald-300">Winning</h3>
+                <p className="text-gray-300">First player to form the required number of sequences wins! (1 sequence in 1v1 mode)</p>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
+      </main>
 
-        <div className={styles.rules}>
-          <h2 className={styles.rulesTitle}>How to Play</h2>
-          <ul className={styles.rulesList}>
-            <li>Play a card from your hand and place a chip on the corresponding card on the board</li>
-            <li>Form sequences of 5 chips in a row (horizontally, vertically, or diagonally)</li>
-            <li>Use Jacks strategically - Two-eyed Jacks are wild, One-eyed Jacks remove opponent chips</li>
-            <li>First player/team to form the required number of sequences wins!</li>
-          </ul>
+      {/* Footer */}
+      <footer className="relative z-10 py-8 mt-12 border-t border-dark-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+          <p className="text-sm text-gray-400">© 2025 Sequence Card Game | Created with Next.js</p>
+          <div className="mt-4 flex space-x-6">
+            <Link href="#" className="text-gray-400 hover:text-gold-400 transition-colors duration-200">
+              Rules
+            </Link>
+            <Link href="#" className="text-gray-400 hover:text-gold-400 transition-colors duration-200">
+              About
+            </Link>
+            <Link href="#" className="text-gray-400 hover:text-gold-400 transition-colors duration-200">
+              Contact
+            </Link>
+          </div>
         </div>
-      </div>
-
-      <footer className={styles.footer}>
-        <p>© 2023 Sequence Card Game | Created with Next.js</p>
       </footer>
     </div>
   );
