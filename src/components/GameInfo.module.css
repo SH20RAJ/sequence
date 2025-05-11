@@ -1,0 +1,90 @@
+.gameInfo {
+  background-color: rgba(26, 26, 46, 0.8);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  color: #fff;
+}
+
+.statusContainer {
+  text-align: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.gameStatus {
+  font-size: 1.5rem;
+  margin: 0;
+  color: #a8dadc;
+}
+
+.playersContainer {
+  margin-top: 10px;
+}
+
+.playersTitle {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #f1faee;
+}
+
+.playersList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.playerItem {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.activePlayer {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.02);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.playerChip {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.red {
+  background-color: #e63946;
+  border: 2px solid #ffcccb;
+}
+
+.blue {
+  background-color: #457b9d;
+  border: 2px solid #a8dadc;
+}
+
+.green {
+  background-color: #2a9d8f;
+  border: 2px solid #94d2bd;
+}
+
+.playerName {
+  flex: 1;
+  font-weight: bold;
+}
+
+.currentTurn {
+  color: #ffd166;
+  font-style: italic;
+}
+
+.playerSequences {
+  margin-left: 10px;
+  font-size: 0.9rem;
+  color: #a8dadc;
+}

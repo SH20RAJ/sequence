@@ -1,0 +1,64 @@
+.card {
+  position: relative;
+  width: 80px;
+  height: 120px;
+  perspective: 1000px;
+  margin: 0 5px;
+  transition: transform 0.3s ease;
+}
+
+.playable {
+  cursor: pointer;
+}
+
+.disabled {
+  cursor: not-allowed;
+}
+
+.hovered {
+  transform: translateY(-10px) scale(1.05);
+}
+
+.cardInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cardFront, .cardBack {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 8px;
+}
+
+.cardFront {
+  background-size: cover;
+  background-position: center;
+}
+
+.cardBack {
+  background-color: #1a1a2e;
+  background-image: linear-gradient(45deg, #2a2a5a 25%, transparent 25%, transparent 75%, #2a2a5a 75%, #2a2a5a), 
+                    linear-gradient(45deg, #2a2a5a 25%, transparent 25%, transparent 75%, #2a2a5a 75%, #2a2a5a);
+  background-size: 10px 10px;
+  background-position: 0 0, 5px 5px;
+  transform: rotateY(180deg);
+}
+
+.disabledOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  z-index: 10;
+}

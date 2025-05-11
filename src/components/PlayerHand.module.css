@@ -1,0 +1,39 @@
+.handContainer {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: rgba(26, 26, 46, 0.8);
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.handTitle {
+  color: #fff;
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.hand {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px;
+}
+
+.cardWrapper {
+  transition: transform 0.3s ease;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+  .hand {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 20px;
+  }
+  
+  .cardWrapper {
+    flex-shrink: 0;
+  }
+}
