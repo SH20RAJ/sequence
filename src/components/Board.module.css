@@ -60,6 +60,16 @@
   opacity: 0.9;
 }
 
+.cardLabel {
+  position: relative;
+  z-index: 2;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
+}
+
 .chip {
   position: absolute;
   width: 40px;

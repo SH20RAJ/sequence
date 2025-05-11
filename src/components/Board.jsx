@@ -39,7 +39,7 @@ const Board = ({ gameState, onPlaceChip, currentPlayer }) => {
             {row.map((cell, colIndex) => {
               const isHovered = hoveredCell?.row === rowIndex && hoveredCell?.col === colIndex;
               const isPlayable = !cell.chip && gameState?.currentPlayer === currentPlayer;
-              
+
               return (
                 <div
                   key={`cell-${rowIndex}-${colIndex}`}
@@ -52,7 +52,19 @@ const Board = ({ gameState, onPlaceChip, currentPlayer }) => {
                     <div className={styles.freeSpace}>FREE</div>
                   ) : (
                     <>
-                      <div className={styles.cardBackground} style={{ backgroundImage: `url(/cards/${cell.card}.png)` }} />
+                      <div
+                        className={styles.cardBackground}
+                        style={{
+                          backgroundImage: `url(/cards/placeholder.svg)`,
+                          backgroundSize: 'cover'
+                        }}
+                      />
+                      {cell.card && (
+                        <div className={styles.cardLabel}>
+                          {cell.card.split('_')[0]}<br/>
+                          {cell.card.split('_')[1]}
+                        </div>
+                      )}
                       {cell.chip && (
                         <div className={`${styles.chip} ${styles[cell.chip]}`} />
                       )}

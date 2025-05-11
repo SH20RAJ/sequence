@@ -1,102 +1,164 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { createGame, joinGame } from '../utils/socketUtils';
+import styles from './page.module.css';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const router = useRouter();
+  const [playerName, setPlayerName] = useState('');
+  const [gameId, setGameId] = useState('');
+  const [isCreating, setIsCreating] = useState(false);
+  const [isJoining, setIsJoining] = useState(false);
+  const [error, setError] = useState('');
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleCreateGame = async (e) => {
+    e.preventDefault();
+    if (!playerName.trim()) {
+      setError('Please enter your name');
+      return;
+    }
+
+    setIsCreating(true);
+
+    try {
+      const result = await createGame(playerName);
+
+      if (result.error) {
+        setError(result.error);
+        setIsCreating(false);
+        return;
+      }
+
+      // Store player info in localStorage
+      localStorage.setItem('sequencePlayerId', result.playerId);
+      localStorage.setItem('sequencePlayerName', playerName);
+
+      // Navigate to the game page
+      router.push(`/game/${result.gameId}`);
+    } catch (error) {
+      console.error('Error creating game:', error);
+      setError('Failed to create game. Please try again.');
+      setIsCreating(false);
+    }
+  };
+
+  const handleJoinGame = async (e) => {
+    e.preventDefault();
+    if (!playerName.trim()) {
+      setError('Please enter your name');
+      return;
+    }
+
+    if (!gameId.trim()) {
+      setError('Please enter a game ID');
+      return;
+    }
+
+    setIsJoining(true);
+
+    try {
+      const result = await joinGame(gameId, playerName);
+
+      if (result.error) {
+        setError(result.error);
+        setIsJoining(false);
+        return;
+      }
+
+      // Store player info in localStorage
+      localStorage.setItem('sequencePlayerId', result.playerId);
+      localStorage.setItem('sequencePlayerName', playerName);
+
+      // Navigate to the game page
+      router.push(`/game/${gameId}`);
+    } catch (error) {
+      console.error('Error joining game:', error);
+      setError('Failed to join game. Please try again.');
+      setIsJoining(false);
+    }
+  };
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.content}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Sequence</h1>
+          <p className={styles.subtitle}>The Classic Board and Card Game</p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+        {error && <div className={styles.error}>{error}</div>}
+
+        <div className={styles.cardBackground}>
+          <div className={styles.formContainer}>
+            <div className={styles.formSection}>
+              <h2 className={styles.formTitle}>Create a New Game</h2>
+              <form onSubmit={handleCreateGame} className={styles.form}>
+                <input
+                  type="text"
+                  value={playerName}
+                  onChange={(e) => setPlayerName(e.target.value)}
+                  placeholder="Your Name"
+                  className={styles.input}
+                  disabled={isCreating || isJoining}
+                />
+                <button
+                  type="submit"
+                  className={styles.button}
+                  disabled={isCreating || isJoining}
+                >
+                  {isCreating ? 'Creating...' : 'Create Game'}
+                </button>
+              </form>
+            </div>
+
+            <div className={styles.divider}></div>
+
+            <div className={styles.formSection}>
+              <h2 className={styles.formTitle}>Join Existing Game</h2>
+              <form onSubmit={handleJoinGame} className={styles.form}>
+                <input
+                  type="text"
+                  value={playerName}
+                  onChange={(e) => setPlayerName(e.target.value)}
+                  placeholder="Your Name"
+                  className={styles.input}
+                  disabled={isCreating || isJoining}
+                />
+                <input
+                  type="text"
+                  value={gameId}
+                  onChange={(e) => setGameId(e.target.value.toUpperCase())}
+                  placeholder="Game ID"
+                  className={styles.input}
+                  disabled={isCreating || isJoining}
+                />
+                <button
+                  type="submit"
+                  className={styles.button}
+                  disabled={isCreating || isJoining}
+                >
+                  {isJoining ? 'Joining...' : 'Join Game'}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.rules}>
+          <h2 className={styles.rulesTitle}>How to Play</h2>
+          <ul className={styles.rulesList}>
+            <li>Play a card from your hand and place a chip on the corresponding card on the board</li>
+            <li>Form sequences of 5 chips in a row (horizontally, vertically, or diagonally)</li>
+            <li>Use Jacks strategically - Two-eyed Jacks are wild, One-eyed Jacks remove opponent chips</li>
+            <li>First player/team to form the required number of sequences wins!</li>
+          </ul>
+        </div>
+      </div>
+
+      <footer className={styles.footer}>
+        <p>© 2023 Sequence Card Game | Created with Next.js</p>
       </footer>
     </div>
   );

@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Sequence Card Game
 
-## Getting Started
+A multiplayer online implementation of the popular Sequence board game using Next.js, React, and Socket.io.
 
-First, run the development server:
+## Game Description
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Sequence is a board and card game where players strategically place chips on the game board by playing cards from their hand. The objective is to form sequences of five chips in a row (horizontally, vertically, or diagonally) before your opponents.
+
+## Game Rules
+
+1. **Setup**:
+   - The game can be played with 2-12 players (typically in teams for more than 3 players)
+   - Each player receives a hand of cards (number depends on player count)
+   - The board consists of a 10x10 grid of card images with four corner spaces marked as "free" spaces
+
+2. **Gameplay**:
+   - On your turn, play a card from your hand and place a chip on the corresponding card space on the board
+   - Draw a new card to replace the one played
+   - The goal is to create sequences (five chips in a row) of your color
+   - Jack cards have special rules:
+     - Two-eyed Jacks (Diamonds and Clubs) are wild and can be placed anywhere
+     - One-eyed Jacks (Hearts and Spades) can remove an opponent's chip
+
+3. **Winning**:
+   - The first player/team to create the required number of sequences wins
+   - Typically 1 sequence for 2 players, 2 sequences for team play
+
+## Technologies Used
+
+- **Frontend**: React, Next.js
+- **Backend**: Next.js API routes
+- **Real-time Communication**: Socket.io
+- **Styling**: CSS Modules
+
+## Features
+
+- Real-time multiplayer gameplay
+- Beautiful, responsive UI
+- Game state synchronization across players
+- Interactive game board and card system
+- Player turn management
+- Sequence detection algorithm
+
+## Setup Instructions
+
+1. Clone the repository
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Run the development server:
+   ```
+   npm run dev
+   ```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## Project Structure
+
+```
+sequence/
+├── src/
+│   ├── app/                  # Next.js app directory
+│   │   ├── page.js           # Home page
+│   │   ├── game/[id]/        # Game route
+│   │   └── api/socket/       # Socket.io API route
+│   ├── components/           # React components
+│   │   ├── Board.jsx         # Game board component
+│   │   ├── Card.jsx          # Card component
+│   │   └── ...               # Other components
+│   └── utils/                # Utility functions
+│       ├── gameUtils.js      # Game logic
+│       └── socketUtils.js    # Socket.io setup
+├── public/                   # Static assets
+│   └── cards/                # Card images
+└── ...                       # Configuration files
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Future Enhancements
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- Add authentication system
+- Implement team play
+- Add game history and statistics
+- Add sound effects and animations
+- Create mobile app version
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## License
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License - see the LICENSE file for details.

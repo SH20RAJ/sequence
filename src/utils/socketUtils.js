@@ -1,50 +1,133 @@
 'use client';
 
-import { io } from 'socket.io-client';
+// API endpoint for game actions
+const API_ENDPOINT = '/api/socket';
 
-let socket;
-
-export const initializeSocket = () => {
-  if (!socket) {
-    socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || '', {
-      path: '/api/socket',
-      addTrailingSlash: false,
+// Create a new game
+export const createGame = async (playerName) => {
+  try {
+    const response = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        action: 'create_game',
+        playerName,
+      }),
     });
-  }
-  return socket;
-};
 
-export const getSocket = () => {
-  if (!socket) {
-    return initializeSocket();
-  }
-  return socket;
-};
+    if (!response.ok) {
+      throw new Error('Failed to create game');
+    }
 
-export const disconnectSocket = () => {
-  if (socket) {
-    socket.disconnect();
-    socket = null;
+    return await response.json();
+  } catch (error) {
+    console.error('Error creating game:', error);
+    throw error;
   }
 };
 
-// Game-related socket events
-export const joinGame = (gameId, playerName) => {
-  const socket = getSocket();
-  socket.emit('join_game', { gameId, playerName });
+// Join an existing game
+export const joinGame = async (gameId, playerName) => {
+  try {
+    const response = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        action: 'join_game',
+        gameId,
+        playerName,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to join game');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error joining game:', error);
+    throw error;
+  }
 };
 
-export const createGame = (playerName) => {
-  const socket = getSocket();
-  socket.emit('create_game', { playerName });
+// Play a card
+export const playCard = async (gameId, playerId, card, position) => {
+  try {
+    const response = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        action: 'play_card',
+        gameId,
+        playerId,
+        card,
+        position,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to play card');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error playing card:', error);
+    throw error;
+  }
 };
 
-export const playCard = (gameId, playerId, card, position) => {
-  const socket = getSocket();
-  socket.emit('play_card', { gameId, playerId, card, position });
+// Leave a game
+export const leaveGame = async (gameId, playerId) => {
+  try {
+    const response = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        action: 'leave_game',
+        gameId,
+        playerId,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to leave game');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error leaving game:', error);
+    throw error;
+  }
 };
 
-export const leaveGame = (gameId, playerId) => {
-  const socket = getSocket();
-  socket.emit('leave_game', { gameId, playerId });
+// Setup SSE (Server-Sent Events) for real-time updates
+export const setupGameUpdates = (gameId, callbacks) => {
+  const eventSource = new EventSource(`/api/game-updates?gameId=${gameId}`);
+
+  eventSource.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    if (callbacks.onGameUpdate) {
+      callbacks.onGameUpdate(data);
+    }
+  };
+
+  eventSource.onerror = (error) => {
+    console.error('SSE error:', error);
+    eventSource.close();
+    if (callbacks.onError) {
+      callbacks.onError(error);
+    }
+  };
+
+  return {
+    close: () => eventSource.close(),
+  };
 };
